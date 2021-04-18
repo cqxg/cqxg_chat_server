@@ -1,5 +1,7 @@
 const http = require('http');
+const cors = require('cors');
 const express = require('express');
+const socketio = require('socket.io');
 
 const { addUser, removeUser, getUser, getUsersInRoom } = require('./users');
 
@@ -7,13 +9,10 @@ const router = require('./router');
 
 const app = express();
 const server = http.createServer(app);
-const io = require("socket.io")(server, {
-  cors: {
-    origin: "https://cqxg-chat.netlify.app/",
-  }
-});
+const io = socketio(server);
 
 app.use(router);
+app.use(cors());
 
 io.on('connect', (socket) => {
   socket.on('join', ({ name, room }, callback) => {
